@@ -1,1 +1,10 @@
-# EsercizioUsersLocation
+Per lo sviluppo di questo progetto ho utilizzato Spring Boot e MongoDB.
+1. Per prima cosa ho creato la connessione al database MongoDB specificando la path del database nell'application.properties del progetto;
+2. Ho iniziato a creare classi separate per rappresentare le tre entità MyUser, Location e Home, aggiungendo le classi UserRequestModel (per costruire l'oggetto in maniera "custom" da inserire nel corpo della richiesta POST) e LocationResponseModel (per dare la forma che volevo al JSON che avrei restituito come risultato del metodo GET per visualizzare tutte le locatione le relative home dell'user specificato tramite username);
+3. Creazione delle interfacce repository per ogni entità così da poter utilizzare i metodi CRUD forniti da MongoRepository per ognuna di esse;
+4. Implementazione della logica del metodo per creare o modificare un nuovo utente o le sue location/home chiamato createOrUpdateUser() rendendo il salvataggio atomico e tramite @Transaction se qualcosa genera un errore effettua un rollback per annullare tutto ed evitare incongruenze sul database. Il secondo metodo, getLocationsByUsername(), serve a visualizzare tutte le location e le relative home associate all'username di un determinato utente. Per quest'ultimo metodo ho aggiunto la possibilità di recuperare i dati dalla cache, anzichè nuovamente dal database, a partire dalla sua seconda chiamata (utilizzando l'annotazione @EnableCaching nella classe principale dell'applicazione e @Cacheable sul metodo interessato per memorizzarne il risultato). In aggiunta ho deciso di implementare un altro metodo svuotaLocationsCache() (in una classe service separata) che svuota la cache del programma senza dovrelo riavviare per rendere il tutto più funzionale (utilizzando l'annotazione @CacheEvict);
+5. Infine ho utilizzato due classi RestController per esporre gli endpoint e ho testato il tutto utilizzando Postman per effettuare le chiamate http verso il server e MongoDB Compass per visualizzare i dati man mano che li salvavo o modificavo.
+
+Funzioni aggiuntive: 
+- Creazione delle classi UserRequestModel e LocationResponseModel per "modellare" i JSON dei metodi POST e GET;
+- Metodo svuotaLocationsCache() per svuotare la cache senza riavviare il programma;
